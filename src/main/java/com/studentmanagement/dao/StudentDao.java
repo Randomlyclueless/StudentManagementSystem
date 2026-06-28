@@ -6,6 +6,9 @@ import com.studentmanagement.model.Student;
 
 import java.sql.Connection;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class StudentDao {
     public void insertStudent(Student student){
             try{
@@ -32,34 +35,58 @@ public class StudentDao {
                 connection.close();
 
             } catch (SQLException e) {
-                e.printStackTrace();            }
+                if (e.getMessage().contains("Duplicate entry")) {
+                    System.out.println("Student already exists!");
+                } else {
+                    System.out.println("Unable to insert student.");
+                }
+            }
     }
-    public void viewAllStudents(){
-        try{
+    public void viewAllStudents() {
+
+        try {
+
             Connection connection = DBConnection.getConnection();
             Statement statement = connection.createStatement();
-            String query = """
-                    SELECT * FROM students
-                    """;
+
+            String query = "SELECT * FROM students";
+
             ResultSet resultSet = statement.executeQuery(query);
-            while(resultSet.next()){
-                System.out.println("Roll No: " + resultSet.getString("roll_no"));
-                System.out.println("Name: " + resultSet.getString("name"));
-                System.out.println("Department: " + resultSet.getString("dept"));
-                System.out.println("Email: " + resultSet.getString("email"));
-                System.out.println("Phone: " + resultSet.getString("phone"));
-                System.out.println("Marks: " + resultSet.getDouble("marks"));
-                System.out.println("---------------------------");
+
+            if (!resultSet.isBeforeFirst()) {
+                System.out.println("\nNo students found.\n");
+
+                resultSet.close();
+                statement.close();
+                connection.close();
+                return;
             }
+
+            System.out.println("\n========================================================================================================");
+            System.out.printf("%-10s %-20s %-15s %-30s %-15s %-8s%n",
+                    "Roll No", "Name", "Department", "Email", "Phone", "Marks");
+            System.out.println("========================================================================================================");
+
+            while (resultSet.next()) {
+
+                System.out.printf("%-10s %-20s %-15s %-30s %-15s %-8.2f%n",
+                        resultSet.getString("roll_no"),
+                        resultSet.getString("name"),
+                        resultSet.getString("dept"),
+                        resultSet.getString("email"),
+                        resultSet.getString("phone"),
+                        resultSet.getDouble("marks"));
+            }
+
+            System.out.println("========================================================================================================");
 
             resultSet.close();
             statement.close();
             connection.close();
 
-    } catch(SQLException e){
-            e.printStackTrace();
+        } catch (SQLException e) {
+            System.out.println("Unable to fetch student records.");
         }
-
     }
     public void updateStudent(Student student){
         try{
@@ -149,5 +176,289 @@ public class StudentDao {
         }
         return null;
 
+    }
+    public List<Student> searchByDepartment(String dept) {
+
+        List<Student> students = new ArrayList<>();
+
+        try {
+            Connection connection = DBConnection.getConnection();
+
+            String query = """
+                SELECT * FROM students
+                WHERE dept = ?
+                """;
+
+            PreparedStatement ps = connection.prepareStatement(query);
+            ps.setString(1, dept);
+
+            ResultSet resultSet = ps.executeQuery();
+
+            while (resultSet.next()) {
+
+                Student student = new Student();
+
+                student.setId(resultSet.getInt("id"));
+                student.setRollNo(resultSet.getString("roll_no"));
+                student.setName(resultSet.getString("name"));
+                student.setDept(resultSet.getString("dept"));
+                student.setEmail(resultSet.getString("email"));
+                student.setPhone(resultSet.getString("phone"));
+                student.setMarks(resultSet.getDouble("marks"));
+
+                students.add(student);
+            }
+
+            resultSet.close();
+            ps.close();
+            connection.close();
+
+        } catch (SQLException e) {
+            System.out.println("Unable to search by department.");
+        }
+
+        return students;
+    }
+    public List<Student> searchByMarks(double marks) {
+
+        List<Student> students = new ArrayList<>();
+
+        try {
+
+            Connection connection = DBConnection.getConnection();
+
+            String query = """
+                SELECT * FROM students
+                WHERE marks >= ?
+                """;
+
+            PreparedStatement ps = connection.prepareStatement(query);
+            ps.setDouble(1, marks);
+
+            ResultSet resultSet = ps.executeQuery();
+
+            while (resultSet.next()) {
+
+                Student student = new Student();
+
+                student.setId(resultSet.getInt("id"));
+                student.setRollNo(resultSet.getString("roll_no"));
+                student.setName(resultSet.getString("name"));
+                student.setDept(resultSet.getString("dept"));
+                student.setEmail(resultSet.getString("email"));
+                student.setPhone(resultSet.getString("phone"));
+                student.setMarks(resultSet.getDouble("marks"));
+
+                students.add(student);
+            }
+
+            resultSet.close();
+            ps.close();
+            connection.close();
+
+        } catch (SQLException e) {
+            System.out.println("Unable to search by marks.");
+        }
+
+        return students;
+    }
+    public List<Student> searchByFirstLetter(char letter) {
+
+        List<Student> students = new ArrayList<>();
+
+        try {
+
+            Connection connection = DBConnection.getConnection();
+
+            String query = """
+                SELECT * FROM students
+                WHERE name LIKE ?
+                """;
+
+            PreparedStatement ps = connection.prepareStatement(query);
+
+            ps.setString(1, letter + "%");
+
+            ResultSet resultSet = ps.executeQuery();
+
+            while (resultSet.next()) {
+
+                Student student = new Student();
+
+                student.setId(resultSet.getInt("id"));
+                student.setRollNo(resultSet.getString("roll_no"));
+                student.setName(resultSet.getString("name"));
+                student.setDept(resultSet.getString("dept"));
+                student.setEmail(resultSet.getString("email"));
+                student.setPhone(resultSet.getString("phone"));
+                student.setMarks(resultSet.getDouble("marks"));
+
+                students.add(student);
+            }
+
+            resultSet.close();
+            ps.close();
+            connection.close();
+
+        } catch (SQLException e) {
+            System.out.println("Unable to search by first letter.");
+        }
+
+        return students;
+    }
+    public void updateName(String rollNo, String name) {
+
+        try {
+            Connection connection = DBConnection.getConnection();
+
+            String query = """
+                UPDATE students
+                SET name = ?
+                WHERE roll_no = ?
+                """;
+
+            PreparedStatement ps = connection.prepareStatement(query);
+
+            ps.setString(1, name);
+            ps.setString(2, rollNo);
+
+            int rowsAffected = ps.executeUpdate();
+
+            if (rowsAffected > 0) {
+                System.out.println("Name updated successfully!");
+            } else {
+                System.out.println("Student not found!");
+            }
+
+            ps.close();
+            connection.close();
+
+        } catch (SQLException e) {
+            System.out.println("Unable to update name.");
+        }
+    }
+    public void updateDepartment(String rollNo, String dept) {
+
+        try {
+            Connection connection = DBConnection.getConnection();
+
+            String query = """
+                UPDATE students
+                SET dept = ?
+                WHERE roll_no = ?
+                """;
+
+            PreparedStatement ps = connection.prepareStatement(query);
+
+            ps.setString(1, dept);
+            ps.setString(2, rollNo);
+
+            int rowsAffected = ps.executeUpdate();
+
+            if (rowsAffected > 0) {
+                System.out.println("Department updated successfully!");
+            } else {
+                System.out.println("Student not found!");
+            }
+
+            ps.close();
+            connection.close();
+
+        } catch (SQLException e) {
+            System.out.println("Unable to update department.");
+        }
+    }
+    public void updateEmail(String rollNo, String email) {
+
+        try {
+            Connection connection = DBConnection.getConnection();
+
+            String query = """
+                UPDATE students
+                SET email = ?
+                WHERE roll_no = ?
+                """;
+
+            PreparedStatement ps = connection.prepareStatement(query);
+
+            ps.setString(1, email);
+            ps.setString(2, rollNo);
+
+            int rowsAffected = ps.executeUpdate();
+
+            if (rowsAffected > 0) {
+                System.out.println("Email updated successfully!");
+            } else {
+                System.out.println("Student not found!");
+            }
+
+            ps.close();
+            connection.close();
+
+        } catch (SQLException e) {
+            System.out.println("Unable to update email.");
+        }
+    }
+    public void updatePhone(String rollNo, String phone) {
+
+        try {
+            Connection connection = DBConnection.getConnection();
+
+            String query = """
+                UPDATE students
+                SET phone = ?
+                WHERE roll_no = ?
+                """;
+
+            PreparedStatement ps = connection.prepareStatement(query);
+
+            ps.setString(1, phone);
+            ps.setString(2, rollNo);
+
+            int rowsAffected = ps.executeUpdate();
+
+            if (rowsAffected > 0) {
+                System.out.println("Phone updated successfully!");
+            } else {
+                System.out.println("Student not found!");
+            }
+
+            ps.close();
+            connection.close();
+
+        } catch (SQLException e) {
+            System.out.println("Unable to update phone.");
+        }
+    }
+    public void updateMarks(String rollNo, double marks) {
+
+        try {
+            Connection connection = DBConnection.getConnection();
+
+            String query = """
+                UPDATE students
+                SET marks = ?
+                WHERE roll_no = ?
+                """;
+
+            PreparedStatement ps = connection.prepareStatement(query);
+
+            ps.setDouble(1, marks);
+            ps.setString(2, rollNo);
+
+            int rowsAffected = ps.executeUpdate();
+
+            if (rowsAffected > 0) {
+                System.out.println("Marks updated successfully!");
+            } else {
+                System.out.println("Student not found!");
+            }
+
+            ps.close();
+            connection.close();
+
+        } catch (SQLException e) {
+            System.out.println("Unable to update marks.");
+        }
     }
 }

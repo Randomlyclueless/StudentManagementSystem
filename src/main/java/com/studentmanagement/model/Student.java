@@ -79,14 +79,14 @@ public class Student {
     }
     @Override
     public String toString() {
-        return "Student{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", dept='" + dept + '\'' +
-                ", email='" + email + '\'' +
-                ", phone='" + phone + '\'' +
-                ", rollno='" + rollNo + '\'' +
-                ", marks=" + marks +
-                '}';
+        return String.format(
+                "Roll No: %-10s | Name: %-20s | Dept: %-10s | Email: %-30s | Phone: %-10s | Marks: %.2f",
+                rollNo,
+                name,
+                dept,
+                email,
+                phone,
+                marks
+        );
     }
 }
