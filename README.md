@@ -111,7 +111,7 @@ These credentials are automatically inserted into the database during initializa
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/<your-username>/StudentManagementSystem.git
+git clone https://github.com/Randomlyclueless/StudentManagementSystem
 ```
 
 ### 2. Create the MySQL Database
