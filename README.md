@@ -163,44 +163,32 @@ Add   View   Search Update Delete Exit
 
 ### Login
 
-_Add screenshot here_
+<img width="1917" height="1142" alt="login" src="https://github.com/user-attachments/assets/809db77a-85cc-4217-80bf-de24aa2bb0e1" />
 
-### Main Menu
-
-_Add screenshot here_
 
 ### Add Student
 
-_Add screenshot here_
+<img width="1911" height="1100" alt="addStudent" src="https://github.com/user-attachments/assets/9453ecdc-cd84-46ec-b8a4-36a36f05e684" />
+
 
 ### View Students
 
-_Add screenshot here_
+<img width="1917" height="1100" alt="viewStudent" src="https://github.com/user-attachments/assets/42e476c6-a725-4956-b3e6-953c97b107b1" />
+
 
 ### Search Student
 
-_Add screenshot here_
+<img width="1917" height="1142" alt="searchStudent" src="https://github.com/user-attachments/assets/ee15de68-85be-44a4-be6a-570e3801a362" />
+
 
 ### Update Student
 
-_Add screenshot here_
+<img width="1917" height="1102" alt="updateStudent" src="https://github.com/user-attachments/assets/22b6cb53-0281-4a3c-a3f5-8186f87caf94" />
+
 
 ### Delete Student
 
-_Add screenshot here_
-
----
-
-## Future Enhancements
-
-- Password Encryption
-- Student Login
-- Attendance Management
-- Course & Enrollment Modules
-- Export Student Data to CSV
-- Java Swing GUI
-- Spring Boot REST API
-- React Frontend
+<img width="1917" height="1105" alt="deleteStudent" src="https://github.com/user-attachments/assets/07b01d1c-d3a2-458d-a242-abdf023269c8" />
 
 ---
 
